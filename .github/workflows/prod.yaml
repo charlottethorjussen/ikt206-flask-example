@@ -15,6 +15,9 @@ jobs:
   build: 
     runs-on: self-hosted
     steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
       - 
        name: Docker Setup Buildx
        uses: docker/setup-buildx-action@v2
@@ -30,8 +33,9 @@ jobs:
         name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
+          context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: user/app:latest
           labels: ${{ steps.meta.outputs.labels }}
 
   test:
