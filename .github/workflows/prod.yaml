@@ -31,10 +31,10 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - 
         name: Build and push Docker image
-          run: |
-            docker build . --tag ghcr.io/charlottethorjussen/hello-docker-gcr-demo:latest
-            docker run ghcr.io/charlottethorjussen/hello-docker-gcr-demo:latest
-            docker push ghcr.io/charlottethorjussen/hello-docker-gcr-demo:latest
+        run: |
+          docker build . --tag ghcr.io/charlottethorjussen/hello-docker-gcr-demo:latest
+          docker run ghcr.io/charlottethorjussen/hello-docker-gcr-demo:latest
+          docker push ghcr.io/charlottethorjussen/hello-docker-gcr-demo:latest
 
         # uses: docker/build-push-action@v4
         # with:
