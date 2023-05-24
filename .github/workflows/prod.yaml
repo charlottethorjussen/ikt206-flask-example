@@ -41,7 +41,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-           uses: actions/checkout@v3
+          uses: actions/checkout@v3
 
   test:
     needs: build
