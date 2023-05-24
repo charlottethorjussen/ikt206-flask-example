@@ -6,23 +6,42 @@ on:
     branches:
       - '**'
 jobs:
-  # build: 
+  build: 
+    runs-on: ubuntu-latest
+    steps:
+      # name: Setup
+      #   uses: |
+      #     echo POSTGRES_USER=${POSTGRES_USER} > .venv
+      #     echo POSTGRES_PASSWORD=${POSTGRES_PASSWORD} >> .venv
+      #     echo POSTGRES_DB=${POSTGRES_DB} >> .venv
+      name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      name: Docker build
+      run: |
+        docker build
+        docker push
 
 
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Run with setup-python 3.9
+      uses: actions/checkout@v3
+      name: Run with setup-python 3.9
         uses: actions/setup-python@v3
         with:
           python-version: 3.9
-      - name: Install  requirements
+      name: Install  requirements
         run: |
           pip install -r requirements.txt
-      - name: Run tests
-        run: coverage run app_test.py
-      - name: Test report
+      name: Run tests
+        run: |
+          pytest
+          coverage run app_test.py
+      name: Test report
         run: coverage report
   
   #  deploy: 
