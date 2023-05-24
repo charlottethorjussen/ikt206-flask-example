@@ -1,6 +1,6 @@
 FROM python:3.8-alpine
 WORKDIR /app
-COPY ./
+COPY ./ .
 #RUN apk update && pip install -r /work/requirements.txt --no-cache-dir
 RUN pip install --no-cache-dir -r requirements.txt psycopg2 gunicorn
 EXPOSE 80
