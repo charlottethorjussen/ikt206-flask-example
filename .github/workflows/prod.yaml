@@ -9,7 +9,9 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/base
+  POSTGRES_USER: test-bruker
+  POSTGRES_PASSWORD: 1234567
+  POSTGRES_DB: test-db
 
 jobs:
   build: 
@@ -63,11 +65,27 @@ jobs:
         run: |
           pip install -r src/requirements.txt
       - name: Run tests
-        run: coverage run app_test.py
+        run: coverage run src/app_test.py
       - name: Test report
         run: coverage report
   
-  #  deploy: 
-  #    needs: test
-  #     environment: prod
-  #     runs-on: ubuntu-latest
+  deploy: 
+    needs: test
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Add ssh
+        run: |
+          apk add --no-cache openssh-client
+          eval $(ssh-agent -s)
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | ssh-add -
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+      - name: Publich
+        run: |
+          ssh charlottct@10.225.149.192 "echo POSTGRES_USER=\"${{ env.POSTGRES_USER }}\" > .env"
+          ssh charlottct@10.225.149.192 "echo POSTGRES_PASSWORD=\"${{ env.POSTGRES_PASSWORD }}\" >> .env"
+          ssh charlottct@10.225.149.192 "echo POSTGRES_DB=\"${{ env.POSTGRES_DB }}\" >> .env"
+          scp docker-compose.yml charlottct@10.225.149.192:~/docker-compose.yml
+          ssh charlottct@10.225.149.192 "docker login -u \"${{ secrets.DOCKERHUB_USERNAME }}\" -p \"${{ secrets.GITHUB_TOKEN }}\" ${{ env.REGISTRY }} && docker-compose pull && docker-compose up -d"
+
