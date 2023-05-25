@@ -75,6 +75,9 @@ jobs:
     needs: build
     runs-on: self-hosted
     steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
       - name: Deploy
         run:  docker run -dp 5001:5001 ikt206-flask-example_application
 
