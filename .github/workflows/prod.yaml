@@ -46,15 +46,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-    services:
-      # Label used to access the service container
-      redis:
-        # Docker Hub image
-        image: ikt206-flask-example_application
 
-        #
-        ports:
-          - 5000:5000
           
 
   # test:
@@ -77,15 +69,14 @@ jobs:
   deploy:
     needs: build
     runs-on: self-hosted
-    services:
-      # Label used to access the service container
-      redis:
-        # Docker Hub image
-        image: ikt206-flask-example_application
-
-        #
-        ports:
-          - 5000:5000
+    # services:
+    #   # Label used to access the service container
+    #   redis:
+    #     # Docker Hub image
+    #     image: ikt206-flask-example_application
+    #     #
+    #     ports:
+    #       - 5000:5000
     steps:
       - name: Deploy
         run: docker run -dp 5000:5000 ikt206-flask-example_application
