@@ -51,6 +51,10 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+      - 
+        name: Deploy
+        run: |
+          docker run -dp 5000:5000 ikt206-flask-example_application
 
   # test:
   #   needs: build
@@ -69,17 +73,17 @@ jobs:
   #     - name: Test report
   #       run: coverage report
 
-  deploy:
-    needs: build
-    permissions:
-      contents: read
-      packages: write
-    runs-on: self-hosted
-    steps:
-      - name: Something
-        run: |
-          ssh ${{ secrets.VM }} "docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.GITHUB_TOKEN }} ${{ env.REGISTRY }} && docker-compose pull && docker-compose up -d"
-          docker-compose -f docker-compose.yml up
+  # deploy:
+  #   needs: build
+  #   permissions:
+  #     contents: read
+  #     packages: write
+  #   runs-on: self-hosted
+  #   steps:
+  #     - name: Something
+  #       run: |
+  #         ssh ${{ secrets.VM }} "docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.GITHUB_TOKEN }} ${{ env.REGISTRY }} && docker-compose pull && docker-compose up -d"
+  #         docker-compose -f docker-compose.yml up
       # -
       #   name: Checkout
       #   uses: actions/checkout@v3
