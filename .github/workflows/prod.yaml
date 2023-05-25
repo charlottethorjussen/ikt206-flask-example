@@ -78,16 +78,7 @@ jobs:
     steps:
       - name: Add ssh
         run: |
-          apk add --no-cache openssh-client
-          eval $(ssh-agent -s)
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | ssh-add -
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-      - name: Publish
-        run: |
-          scp docker-compose.yml charlottct@10.225.149.192:~/docker-compose.yml
-          ssh charlottct@10.225.149.192 "docker login -u \"${{ secrets.DOCKERHUB_USERNAME }}\" -p \"${{ secrets.GITHUB_TOKEN }}\" ${{ env.REGISTRY }} && docker-compose pull && docker-compose up -d"
+          docker-compose -f docker-compose.yml up
       # -
       #   name: Checkout
       #   uses: actions/checkout@v3
