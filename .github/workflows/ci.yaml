@@ -55,6 +55,7 @@ jobs:
         name: Deploy
         run: |
           docker run -dp 5000:5000 ikt206-flask-example_application
+          
 
   # test:
   #   needs: build
