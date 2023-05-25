@@ -1,18 +1,8 @@
-FROM python:3.8
+FROM python:3.8-alpine
 
-# First, we need to install Pipenv
-RUN pip install pipenv
+WORKDIR /app
 
-# Then, we need to convert the Pipfile to requirements.txt
-COPY Pipfile* /tmp/
-
-RUN cd /tmp && pipenv lock --keep-outdated --requirements > requirements.txt
-
-# Last, we install the dependency and then we can start the Gunicorn.
-RUN pip install -r /tmp/requirements.txt
-
-COPY . /tmp/app
-
-WORKDIR /tmp/app
+COPY ./src .
+RUN apk update && pip install --no-cache-dir -r requirements.txt 
 
 CMD ["gunicorn", "--bind", "0.0.0.0:5001", "app:app"]
