@@ -2,10 +2,10 @@ FROM python:3.8
 
 WORKDIR /app
 
-COPY ./src .
-RUN pip install --no-cache-dir -r src/requirements.txt 
+COPY src/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt 
 
-# EXPOSE 5000
+ENV FLASK_APP=src/app.py
 
-CMD ["python3", "app.py"]
-# CMD flask run --host=0.0.0.0 --port=5000
+EXPOSE 5000
+CMD ["flask", "run", "--host=0.0.0.0"]
