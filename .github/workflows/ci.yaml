@@ -70,14 +70,14 @@ jobs:
     steps:
       - name: Deploy
         run: |
-          eval $(ssh-agent -s)
-          echo "@{{ secrets.PRIVAT_SSH_KEY }}" | ssh-add -
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
           scp docker-compose.yml ${{ secrets.VM }}:~/docker-compose.yml
           ssh ${{ secrets.VM }} "docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.GITHUB_TOKEN }} ${{ env.REGISTRY }} && docker-compose pull && docker-compose up -d"
 
         # docker run ikt206-flask-example_application
 
           # apk add --no-cache openssh-client
+          #  eval $(ssh-agent -s)
+          # echo "@{{ secrets.PRIVAT_SSH_KEY }}" | ssh-add -
+          # mkdir -p ~/.ssh
+          # chmod 700 ~/.ssh
+          # echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
