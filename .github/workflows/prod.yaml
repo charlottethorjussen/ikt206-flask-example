@@ -7,9 +7,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  POSTGRES_USER: test-bruker
-  POSTGRES_PASSWORD: 1234567
-  POSTGRES_DB: test-db
 
 jobs:
   build:
@@ -72,8 +69,17 @@ jobs:
   deploy:
     needs: build
     runs-on: self-hosted
+    services:
+      # Label used to access the service container
+      redis:
+        # Docker Hub image
+        image: ikt206-flask-example_application
+
+        #
+        ports:
+          - 5000:5000
     steps:
       - name: Deploy
-        run: docker run -dp 500:5000 ikt206-flask-example_application
+        run: docker run -dp 5000:5000 ikt206-flask-example_application
 
 
