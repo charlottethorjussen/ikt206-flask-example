@@ -53,8 +53,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
       - 
         name: Deploy
-        run: |
-          docker run -dp 5000:5000 ikt206-flask-example_application
+        run: docker build -t tutorial/1-flask-deployment . && docker run -dp 5001:5001 tutorial/1-flask-deployment
+
           
 
   # test:

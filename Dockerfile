@@ -1,9 +1,18 @@
-FROM python:3.8-alpine
+FROM python:3.8
 
-WORKDIR /app
+# First, we need to install Pipenv
+RUN pip install pipenv
 
-COPY ./src .
-RUN apk update && pip install --no-cache-dir -r requirements.txt 
+# Then, we need to convert the Pipfile to requirements.txt
+COPY Pipfile* /tmp/
 
-EXPOSE 5000
-CMD flask run --host=0.0.0.0 --port=5000
+RUN cd /tmp && pipenv lock --keep-outdated --requirements > requirements.txt
+
+# Last, we install the dependency and then we can start the Gunicorn.
+RUN pip install -r /tmp/requirements.txt
+
+COPY . /tmp/app
+
+WORKDIR /tmp/app
+
+CMD ["gunicorn", "--bind", "0.0.0.0:5001", "app:app"]
