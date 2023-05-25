@@ -64,20 +64,34 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
 
-  deploy:
+  test:
     needs: build
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
-      - name: Deploy
+      - uses: actions/checkout@v3
+      - name: Run with setup-python 3.9
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.9
+      - name: Install  requirements
         run: |
-          scp docker-compose.yml ${{ secrets.VM }}:~/docker-compose.yml
-          ssh ${{ secrets.VM }} "docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.GITHUB_TOKEN }} ${{ env.REGISTRY }} && docker-compose pull && docker-compose up -d"
+          pip install -r src/requirements.txt
+      - name: Run tests
+        run: coverage run src/app_test.py
+      - name: Test report
+        run: coverage report
 
-        # docker run ikt206-flask-example_application
 
-          # apk add --no-cache openssh-client
-          #  eval $(ssh-agent -s)
-          # echo "@{{ secrets.PRIVAT_SSH_KEY }}" | ssh-add -
-          # mkdir -p ~/.ssh
-          # chmod 700 ~/.ssh
-          # echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+  deploy:
+    needs: test
+    runs-on: self-hosted
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Deploy to Docker host
+        run: |
+          docker stop app || true
+          docker rm app || true
+          docker run -d -p 5000:5000 --name app ikt206-flask-example_application:latest
