@@ -31,13 +31,6 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: |
-            ghcr.io/${{ github.repository }}
-
       -
         name: Build and push Docker image
         uses: docker/build-push-action@v4
@@ -45,8 +38,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ikt206-flask-example_application:latest
 
 
   test:
