@@ -37,7 +37,7 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        uses: docker/metadata-action@v3
         with:
           images: |
             ghcr.io/${{ github.repository }}
@@ -51,9 +51,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-      - 
-        name: Deploy
-        run:  docker run -dp 5001:5001 ikt206-flask-example_application
 
           
 
@@ -74,35 +71,11 @@ jobs:
   #     - name: Test report
   #       run: coverage report
 
-  # deploy:
-  #   needs: build
-  #   permissions:
-  #     contents: read
-  #     packages: write
-  #   runs-on: self-hosted
-  #   steps:
-  #     - name: Something
-  #       run: |
-  #         ssh ${{ secrets.VM }} "docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.GITHUB_TOKEN }} ${{ env.REGISTRY }} && docker-compose pull && docker-compose up -d"
-  #         docker-compose -f docker-compose.yml up
-      # -
-      #   name: Checkout
-      #   uses: actions/checkout@v3
-      # -
-      #   name: Create release
-      #   id: create-release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ github.ref }}
-      #     release_name: Release ${{ github.ref }}
-      # -
-      #   name: Uplode release asset
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create-release.outputs.upload_url }}
+    deploy:
+      needs: build
+      runs-on: self-hosted
+      steps:
+        - name: Deploy
+          run:  docker run -dp 5001:5001 ikt206-flask-example_application
 
 
