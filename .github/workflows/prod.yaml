@@ -2,10 +2,8 @@ name: build
 
 on:
   push:
-    tags-ignore:
-      - '*'
-    branches:
-      - '**'
+    branch:
+      - master
 
 env:
   REGISTRY: ghcr.io
@@ -51,9 +49,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-      -
-        name: Deploy
-        run:  docker run -dp 5001:5001 ikt206-flask-example_application
 
           
 
@@ -74,11 +69,11 @@ jobs:
   #     - name: Test report
   #       run: coverage report
 
-  # deploy:
-  #   needs: build
-  #   runs-on: self-hosted
-  #   steps:
-  #     - name: Deploy
-  #       run:  docker run -dp 5001:5001 ikt206-flask-example_application
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Deploy
+        run: docker run -dp 500:5000 ikt206-flask-example_application
 
 
