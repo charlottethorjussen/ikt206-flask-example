@@ -1,4 +1,4 @@
-name: Test run
+name: build and deploy
 
 on:
   push:
@@ -76,8 +76,9 @@ jobs:
       packages: write
     runs-on: self-hosted
     steps:
-      - name: Add ssh
+      - name: Something
         run: |
+          ssh ${{ secrets.VM }} "docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.GITHUB_TOKEN }} ${{ env.REGISTRY }} && docker-compose pull && docker-compose up -d"
           docker-compose -f docker-compose.yml up
       # -
       #   name: Checkout
