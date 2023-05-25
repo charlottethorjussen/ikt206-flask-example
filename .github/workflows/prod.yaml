@@ -71,11 +71,11 @@ jobs:
   #     - name: Test report
   #       run: coverage report
 
-    deploy:
-      needs: build
-      runs-on: self-hosted
-      steps:
-        - name: Deploy
-          run:  docker run -dp 5001:5001 ikt206-flask-example_application
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Deploy
+        run:  docker run -dp 5001:5001 ikt206-flask-example_application
 
 
